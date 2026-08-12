@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Light to Light — 12.08.2026</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+
+    :root {
+      --progress: 0.72;
+      --sky: rgb(244, 177, 78);
+      --text: #111;
+      --muted: rgba(17, 17, 17, .55);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: Inter, sans-serif;
+      background: var(--sky);
+      color: var(--text);
+      transition:
+        background 1.2s cubic-bezier(.22,1,.36,1),
+        color 1.2s ease;
+
+      cursor: crosshair;
+    }
+
+    /* --------------------------------------------------
+       SKY
+    -------------------------------------------------- */
+
+    .sky {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(
+          circle at 50% 42%,
+          rgba(255,255,255,.15),
+          transparent 30%
+        );
+    }
+
+    /* subtle grain */
+
+    .sky::after {
+      content: "";
+      position: absolute;
+      inset: -50%;
+      pointer-events: none;
+      opacity: .06;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+      transform: rotate(8deg);
+    }
+
+    /* --------------------------------------------------
+       SUN
+    -------------------------------------------------- */
+
+    .sun {
+      position: absolute;
+      width: min(52vw, 650px);
+      aspect-ratio: 1;
+      left: 50%;
+      top: 47%;
+      transform: translate(-50%, -50%);
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          #fffbd9 0%,
+          #ffe7a0 42%,
+          #ffb12b 72%,
+          #ff8a00 100%
+        );
+
+      box-shadow:
+        0 0 60px rgba(255, 188, 57, .65),
+        0 0 160px rgba(255, 157, 31, .35);
+
+      transition:
+        transform .1s linear,
+        filter 1s ease,
+        opacity 1s ease;
+    }
+
+    .sun::after {
+      content: "";
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.4);
+      box-shadow:
+        0 0 35px rgba(255,180,40,.5),
+        0 0 100px rgba(255,160,20,.3);
+    }
+
+    /* --------------------------------------------------
+       MOON
+    -------------------------------------------------- */
+
+    .moon {
+      position: absolute;
+      width: min(52vw, 650px);
+      aspect-ratio: 1;
+
+      left: 50%;
+      top: 47%;
+
+      border-radius: 50%;
+      background: #050505;
+
+      transform:
+        translate(
+          calc(-50% + var(--moon-x)),
+          -50%
+        );
+
+      transition:
+        transform .12s linear;
+
+      z-index: 2;
+    }
+
+    .moon::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,.05), transparent 10%),
+        radial-gradient(circle at 65% 60%, rgba(255,255,255,.04), transparent 15%),
+        radial-gradient(circle at 40% 75%, rgba(255,255,255,.03), transparent 8%);
+    }
+
+    /* --------------------------------------------------
+       STARS
+    -------------------------------------------------- */
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      opacity: var(--stars);
+      transition: opacity 1.5s ease;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 8px white;
+      animation: twinkle 2s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      from {
+        opacity: .2;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* --------------------------------------------------
+       METEORS
+    -------------------------------------------------- */
+
+    #meteors {
+      position: absolute;
+      inset: 0;
+      opacity: var(--meteor-opacity);
+      transition: opacity 2s ease;
+    }
+
+    .meteor {
+      position: absolute;
+      width: 2px;
+      height: 120px;
+
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(255,255,255,.9)
+      );
+
+      transform: rotate(35deg);
+      filter: drop-shadow(0 0 6px white);
+
+      animation: meteor 1.3s linear forwards;
+    }
+
+    @keyframes meteor {
+      from {
+        transform:
+          translate(0,0)
+          rotate(35deg);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      to {
+        transform:
+          translate(-260px,260px)
+          rotate(35deg);
+        opacity: 0;
+      }
+    }
+
+    /* --------------------------------------------------
+       UI
+    -------------------------------------------------- */
+
+    .ui {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      padding: 28px 32px;
+
+      pointer-events: none;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .title {
+      font-size: 13px;
+      letter-spacing: .08em;
+    }
+
+    .location {
+      text-align: right;
+      opacity: .6;
+    }
+
+    /* --------------------------------------------------
+       CENTER INFO
+    -------------------------------------------------- */
+
+    .info {
+      position: absolute;
+      left: 32px;
+      bottom: 120px;
+
+      transition:
+        color 1s ease;
+    }
+
+    .percentage {
+      font-size: clamp(72px, 13vw, 180px);
+      font-weight: 500;
+      line-height: .8;
+      letter-spacing: -.07em;
+    }
+
+    .label {
+      margin-top: 18px;
+
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+
+      opacity: .6;
+    }
+
+    /* --------------------------------------------------
+       BOTTOM
+    -------------------------------------------------- */
+
+    .bottom {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .timeline {
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,.25);
+      position: relative;
+    }
+
+    .timeline-progress {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 1px;
+      width: 72%;
+      background: currentColor;
+    }
+
+    .times {
+      display: flex;
+      justify-content: space-between;
+
+      font-family: "DM Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .08em;
+
+      opacity: .55;
+    }
+
+    .hint {
+      position: absolute;
+      right: 32px;
+      bottom: 120px;
+
+      font-family: "DM Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+
+      opacity: .45;
+      transition: opacity .5s ease;
+    }
+
+    /* --------------------------------------------------
+       NIGHT MODE
+    -------------------------------------------------- */
+
+    body.night {
+      color: #fff;
+    }
+
+    body.night .hint {
+      opacity: 0;
+    }
+
+    body.night .sun {
+      filter: brightness(.15);
+      opacity: .15;
+    }
+
+    /* --------------------------------------------------
+       MOBILE
+    -------------------------------------------------- */
+
+    @media (max-width: 600px) {
+
+      .ui {
+        padding: 20px;
+      }
+
+      .sun,
+      .moon {
+        width: 78vw;
+      }
+
+      .info {
+        left: 20px;
+        bottom: 110px;
+      }
+
+      .percentage {
+        font-size: 23vw;
+      }
+
+      .hint {
+        right: 20px;
+        bottom: 185px;
+        max-width: 120px;
+        text-align: right;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="sky">
+
+    <div class="stars" id="stars"></div>
+
+    <canvas id="meteors"></canvas>
+
+    <div class="sun"></div>
+    <div class="moon" id="moon"></div>
+
+  </div>
+
+
+  <main class="ui">
+
+    <header class="top">
+
+      <div class="title">
+        FROM LIGHT TO LIGHT
+      </div>
+
+      <div class="location">
+        12.08.2026<br>
+        BELGIUM
+      </div>
+
+    </header>
+
+
+    <section class="info">
+
+      <div class="percentage" id="percentage">
+        89.6%
+      </div>
+
+      <div class="label" id="label">
+        maximum eclipse
+      </div>
+
+    </section>
+
+
+    <div class="hint">
+      drag the moon
+    </div>
+
+
+    <footer class="bottom">
+
+      <div class="timeline">
+        <div
+          class="timeline-progress"
+          id="progress">
+        </div>
+      </div>
+
+      <div class="times">
+        <span>19:19</span>
+        <span id="event">ECLIPSE</span>
+        <span>21:05</span>
+      </div>
+
+    </footer>
+
+  </main>
+
+
+  <script>
+        /* ==================================================
+       CONFIG
+    ================================================== */
+
+    const MAX_COVERAGE = 89.6;
+
+    /*
+      0 = beginning
+      1 = maximum
+      2 = after eclipse
+    */
+
+    let position = 0.72;
+
+    let dragging = false;
+
+    const moon = document.getElementById("moon");
+    const percentage =
+      document.getElementById("percentage");
+
+    const label =
+      document.getElementById("label");
+
+    const progress =
+      document.getElementById("progress");
+
+    const eventLabel =
+      document.getElementById("event");
+
+    const stars =
+      document.getElementById("stars");
+
+
+    /* ==================================================
+       CREATE STARS
+    ================================================== */
+
+    for (let i = 0; i < 180; i++) {
+
+      const star =
+        document.createElement("div");
+
+      star.className = "star";
+
+      star.style.left =
+        Math.random() * 100 + "%";
+
+      star.style.top =
+        Math.random() * 100 + "%";
+
+      star.style.animationDelay =
+        Math.random() * 3 + "s";
+
+      star.style.opacity =
+        Math.random();
+
+      stars.appendChild(star);
+    }
+
+
+    /* ==================================================
+       UPDATE EXPERIENCE
+    ================================================== */
+
+    function update() {
+
+      /*
+        Moon movement.
+
+        At position 0:
+        moon is left of sun.
+
+        At position 1:
+        moon completely covers most of sun.
+
+        At position 2:
+        moon has moved away.
+      */
+
+      const maxMovement =
+        window.innerWidth < 600
+          ? window.innerWidth * .95
+          : window.innerWidth * .65;
+
+      let moonX =
+        (position - .72) * maxMovement;
+
+      moon.style.setProperty(
+        "--moon-x",
+        `${moonX}px`
+      );
+
+
+      /* ----------------------------------------------
+         COVERAGE
+      ---------------------------------------------- */
+
+      let coverage;
+
+      if (position <= 1) {
+
+        coverage =
+          Math.max(
+            0,
+            Math.min(
+              MAX_COVERAGE,
+              (position / 1) * MAX_COVERAGE
+            )
+          );
+
+      } else {
+
+        coverage =
+          Math.max(
+            0,
+            MAX_COVERAGE -
+            ((position - 1) * MAX_COVERAGE)
+          );
+      }
+
+
+      percentage.textContent =
+        coverage.toFixed(1) + "%";
+
+
+      /* ----------------------------------------------
+         BACKGROUND
+      ---------------------------------------------- */
+
+      const darkness =
+        Math.min(1, coverage / MAX_COVERAGE);
+
+      const r =
+        Math.round(244 - darkness * 238);
+
+      const g =
+        Math.round(177 - darkness * 165);
+
+      const b =
+        Math.round(78 + darkness * 120);
+
+      document.documentElement.style
+        .setProperty(
+          "--sky",
+          `rgb(${r},${g},${b})`
+        );
+
+      document.body.style.background =
+        `rgb(${r},${g},${b})`;
+
+
+      /* ----------------------------------------------
+         STARS
+      ---------------------------------------------- */
+
+      const starOpacity =
+        Math.max(
+          0,
+          (darkness - .55) * 2
+        );
+
+      document.documentElement.style
+        .setProperty(
+          "--stars",
+          starOpacity
+        );
+
+
+      /* ----------------------------------------------
+         METEORS
+      ---------------------------------------------- */
+
+      const meteorOpacity =
+        Math.max(
+          0,
+          (position - 1.1) * 5
+        );
+
+      document.documentElement.style
+        .setProperty(
+          "--meteor-opacity",
+          meteorOpacity
+        );
+
+
+      /* ----------------------------------------------
+         TEXT
+      ---------------------------------------------- */
+
+      if (position < .25) {
+
+        label.textContent =
+          "the eclipse begins";
+
+        eventLabel.textContent =
+          "ECLIPSE";
+
+      } else if (position < .9) {
+
+        label.textContent =
+          "moon crossing the sun";
+
+        eventLabel.textContent =
+          "IN PROGRESS";
+
+      } else if (position <= 1.1) {
+
+        label.textContent =
+          "maximum eclipse";
+
+        eventLabel.textContent =
+          "89.6% COVERED";
+
+      } else {
+
+        label.textContent =
+          "the night begins";
+
+        eventLabel.textContent =
+          "PERSEIDS";
+
+        document.body.classList.add("night");
+      }
+
+      if (position <= 1.1) {
+        document.body.classList.remove("night");
+      }
+
+
+      /* ----------------------------------------------
+         TIMELINE
+      ---------------------------------------------- */
+
+      progress.style.width =
+        Math.min(position / 1.35, 1) * 100 + "%";
+    }
+
+
+    /* ==================================================
+       POINTER INTERACTION
+    ================================================== */
+
+    function pointerPosition(clientX) {
+
+      const width =
+        window.innerWidth;
+
+      /*
+        Give the user a nice interaction zone.
+
+        You can drag the moon across the screen,
+        but we map the movement to 0 → 1.35.
+      */
+
+      position =
+        Math.max(
+          0,
+          Math.min(
+            1.35,
+            clientX / width * 1.35
+          )
+        );
+
+      update();
+    }
+
+
+    window.addEventListener(
+      "pointerdown",
+      e => {
+
+        dragging = true;
+
+        pointerPosition(
+          e.clientX
+        );
+      }
+    );
+
+
+    window.addEventListener(
+      "pointermove",
+      e => {
+
+        if (!dragging) return;
+
+        pointerPosition(
+          e.clientX
+        );
+      }
+    );
+
+
+    window.addEventListener(
+      "pointerup",
+      () => {
+        dragging = false;
+      }
+    );
+
+
+    /* ==================================================
+       METEOR ENGINE
+    ================================================== */
+
+    const canvas =
+      document.getElementById("meteors");
+
+    const ctx =
+      canvas.getContext("2d");
+
+
+    function resizeCanvas() {
+
+      canvas.width =
+        window.innerWidth *
+        devicePixelRatio;
+
+      canvas.height =
+        window.innerHeight *
+        devicePixelRatio;
+
+      canvas.style.width =
+        window.innerWidth + "px";
+
+      canvas.style.height =
+        window.innerHeight + "px";
+
+      ctx.scale(
+        devicePixelRatio,
+        devicePixelRatio
+      );
+    }
+
+    resizeCanvas();
+
+    window.addEventListener(
+      "resize",
+      resizeCanvas
+    );
+
+
+    function createMeteor() {
+
+      if (position < 1.08)
+        return;
+
+      const meteor =
+        document.createElement("div");
+
+      meteor.className =
+        "meteor";
+
+      meteor.style.left =
+        Math.random() * 100 + "%";
+
+      meteor.style.top =
+        Math.random() * 55 + "%";
+
+      meteor.style.animationDuration =
+        (.7 + Math.random() * 1.2) + "s";
+
+      document.querySelector(
+        ".sky"
+      ).appendChild(meteor);
+
+      setTimeout(() => {
+        meteor.remove();
+      }, 2200);
+    }
+
+
+    setInterval(
+      createMeteor,
+      450
+    );
+        /* ==================================================
+       INITIAL STATE
+    ================================================== */
+
+    update();
+
+  </script>
+
+</body>
+</html>
