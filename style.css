@@ -679,14 +679,17 @@ body {
     absolute;
 
   right:
-    32px;
+    910px;
 
   bottom:
-    120px;
+    480px;
 
   font-family:
     "DM Mono",
     monospace;
+
+color:
+    white;
 
   font-size:
     10px;
