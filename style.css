@@ -1,0 +1,942 @@
+@import url(
+  'https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap'
+);
+
+
+/* ==================================================
+   VARIABLES
+================================================== */
+
+:root {
+
+  --sky: rgb(244, 177, 78);
+
+  --text: #111;
+
+  --muted:
+    rgba(17, 17, 17, .55);
+
+  --stars: 0;
+
+  --meteor-opacity: 0;
+
+}
+
+
+/* ==================================================
+   RESET
+================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+
+html,
+body {
+
+  margin: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+
+/* ==================================================
+   BODY
+================================================== */
+
+body {
+
+  font-family:
+    Inter,
+    sans-serif;
+
+  background:
+    var(--sky);
+
+  color:
+    var(--text);
+
+  transition:
+
+    background
+    1.2s
+    cubic-bezier(.22,1,.36,1),
+
+    color
+    1.2s
+    ease;
+
+.moon {
+  cursor: grab;
+}
+
+.moon:active {
+  cursor: grabbing;
+}
+
+
+  touch-action:
+    none;
+
+}
+
+
+/* ==================================================
+   SKY
+================================================== */
+
+.sky {
+
+  position: fixed;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  background:
+
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(255,255,255,.15),
+      transparent 30%
+    );
+
+}
+
+
+/* ==================================================
+   GRAIN
+================================================== */
+
+.sky::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: -50%;
+
+  pointer-events: none;
+
+  opacity: .06;
+
+  background-image:
+
+    url(
+      "data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E"
+    );
+
+  transform:
+    rotate(8deg);
+
+  z-index:
+    20;
+}
+
+
+/* ==================================================
+   SUN
+================================================== */
+
+.sun {
+
+  position: absolute;
+
+  width:
+    min(
+      52vw,
+      650px
+    );
+
+  aspect-ratio:
+    1;
+
+  left:
+    50%;
+
+  top:
+    47%;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius:
+    50%;
+
+  background:
+
+    radial-gradient(
+      circle,
+
+      #fffbd9 0%,
+
+      #ffe7a0 42%,
+
+      #ffb12b 72%,
+
+      #ff8a00 100%
+    );
+
+  box-shadow:
+
+    0 0 60px
+    rgba(255,188,57,.65),
+
+    0 0 160px
+    rgba(255,157,31,.35);
+
+  z-index:
+    1;
+
+  transition:
+
+    filter
+    1s ease,
+
+    opacity
+    1s ease;
+
+}
+
+
+/* ==================================================
+   SUN HALO
+================================================== */
+
+.sun::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset:
+    -12px;
+
+  border-radius:
+    50%;
+
+  border:
+    1px solid
+    rgba(255,255,255,.4);
+
+  box-shadow:
+
+    0 0 35px
+    rgba(255,180,40,.5),
+
+    0 0 100px
+    rgba(255,160,20,.3);
+
+}
+
+
+/* ==================================================
+   MOON
+================================================== */
+
+.moon {
+
+  position: absolute;
+
+  width:
+    min(
+      52vw,
+      650px
+    );
+
+  aspect-ratio:
+    1;
+
+  left:
+    50%;
+
+  top:
+    47%;
+
+  border-radius:
+    50%;
+
+  background:
+    #050505;
+
+  transform:
+
+    translate(
+      calc(-50% + var(--moon-x)),
+      -50%
+    );
+
+  transition:
+
+    transform
+    .08s
+    linear;
+
+  z-index:
+    2;
+
+  will-change:
+    transform;
+
+}
+
+
+/* ==================================================
+   MOON TEXTURE
+================================================== */
+
+.moon::before {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  border-radius:
+    50%;
+
+  background:
+
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(255,255,255,.05),
+      transparent 10%
+    ),
+
+    radial-gradient(
+      circle at 65% 60%,
+      rgba(255,255,255,.04),
+      transparent 15%
+    ),
+
+    radial-gradient(
+      circle at 40% 75%,
+      rgba(255,255,255,.03),
+      transparent 8%
+    );
+
+}
+
+
+/* ==================================================
+   STARS
+================================================== */
+
+.stars {
+
+  position: absolute;
+
+  inset: 0;
+
+  opacity:
+    var(--stars);
+
+  transition:
+    opacity
+    1.5s
+    ease;
+
+  z-index:
+    3;
+
+  pointer-events:
+    none;
+
+}
+
+
+/* ==================================================
+   STAR
+================================================== */
+
+.star {
+
+  position: absolute;
+
+  width:
+    2px;
+
+  height:
+    2px;
+
+  background:
+    white;
+
+  border-radius:
+    50%;
+
+  box-shadow:
+    0 0 8px white;
+
+  animation:
+    twinkle
+    2s
+    infinite
+    alternate;
+
+}
+
+
+@keyframes twinkle {
+
+  from {
+    opacity: .2;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+}
+
+
+/* ==================================================
+   METEORS
+================================================== */
+
+#meteors {
+
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  opacity:
+    var(--meteor-opacity);
+
+  transition:
+    opacity
+    2s
+    ease;
+
+  z-index:
+    5;
+
+  pointer-events:
+    none;
+
+}
+
+
+/* ==================================================
+   METEOR
+================================================== */
+
+.meteor {
+
+  position: absolute;
+
+  width:
+    2px;
+
+  height:
+    120px;
+
+  background:
+
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(255,255,255,.9)
+    );
+
+  transform:
+    rotate(35deg);
+
+  filter:
+    drop-shadow(
+      0 0 6px white
+    );
+
+  animation:
+    meteor
+    1.3s
+    linear
+    forwards;
+
+}
+
+
+@keyframes meteor {
+
+  from {
+
+    transform:
+      translate(0,0)
+      rotate(35deg);
+
+    opacity:
+      0;
+
+  }
+
+  10% {
+
+    opacity:
+      1;
+
+  }
+
+  to {
+
+    transform:
+      translate(-260px,260px)
+      rotate(35deg);
+
+    opacity:
+      0;
+
+  }
+
+}
+
+
+/* ==================================================
+   UI
+================================================== */
+
+.ui {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index:
+    10;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  justify-content:
+    space-between;
+
+  padding:
+    28px 32px;
+
+  pointer-events:
+    none;
+
+}
+
+
+/* ==================================================
+   TOP
+================================================== */
+
+.top {
+
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    flex-start;
+
+  font-family:
+    "DM Mono",
+    monospace;
+
+  font-size:
+    11px;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    .12em;
+
+}
+
+
+/* ==================================================
+   TITLE
+================================================== */
+
+.title {
+
+  font-size:
+    13px;
+
+  letter-spacing:
+    .08em;
+
+}
+
+
+/* ==================================================
+   LOCATION
+================================================== */
+
+.location {
+
+  text-align:
+    right;
+
+  opacity:
+    .6;
+
+}
+
+
+/* ==================================================
+   INFO
+================================================== */
+
+.info {
+
+  position:
+    absolute;
+
+  left:
+    32px;
+
+  bottom:
+    120px;
+
+  transition:
+    color
+    1s
+    ease;
+
+}
+
+
+/* ==================================================
+   PERCENTAGE
+================================================== */
+
+.percentage {
+
+  font-size:
+    clamp(
+      72px,
+      13vw,
+      180px
+    );
+
+  font-weight:
+    500;
+
+  line-height:
+    .8;
+
+  letter-spacing:
+    -.07em;
+
+  font-variant-numeric:
+    tabular-nums;
+
+}
+
+
+/* ==================================================
+   LABEL
+================================================== */
+
+.label {
+
+  margin-top:
+    18px;
+
+  font-family:
+    "DM Mono",
+    monospace;
+
+  font-size:
+    11px;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    .12em;
+
+  opacity:
+    .6;
+
+}
+
+
+/* ==================================================
+   HINT
+================================================== */
+
+.hint {
+
+  position:
+    absolute;
+
+  right:
+    32px;
+
+  bottom:
+    120px;
+
+  font-family:
+    "DM Mono",
+    monospace;
+
+  font-size:
+    10px;
+
+  letter-spacing:
+    .1em;
+
+  text-transform:
+    uppercase;
+
+  opacity:
+    .45;
+
+  transition:
+    opacity
+    .5s
+    ease;
+
+}
+
+
+/* ==================================================
+   BOTTOM
+================================================== */
+
+.bottom {
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    14px;
+
+}
+
+
+/* ==================================================
+   TIMELINE
+================================================== */
+
+.timeline {
+
+  width:
+    100%;
+
+  height:
+    1px;
+
+  background:
+    rgba(255,255,255,.25);
+
+  position:
+    relative;
+
+}
+
+
+/* ==================================================
+   TIMELINE PROGRESS
+================================================== */
+
+.timeline-progress {
+
+  position:
+    absolute;
+
+  left:
+    0;
+
+  top:
+    0;
+
+  height:
+    1px;
+
+  width:
+    0%;
+
+  background:
+    currentColor;
+
+}
+
+
+/* ==================================================
+   TIMES
+================================================== */
+
+.times {
+
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  font-family:
+    "DM Mono",
+    monospace;
+
+  font-size:
+    10px;
+
+  letter-spacing:
+    .08em;
+
+  opacity:
+    .55;
+
+}
+
+
+/* ==================================================
+   NIGHT MODE
+================================================== */
+
+body.night {
+
+  color:
+    #fff;
+
+}
+
+
+body.night .hint {
+
+  opacity:
+    0;
+
+}
+
+
+body.night .sun {
+
+  filter:
+    brightness(.15);
+
+  opacity:
+    .15;
+
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width: 600px) {
+
+  .ui {
+
+    padding:
+      20px;
+
+  }
+
+
+  .sun,
+  .moon {
+
+    width:
+      78vw;
+
+  }
+
+
+  .info {
+
+    left:
+      20px;
+
+    bottom:
+      110px;
+
+  }
+
+
+  .percentage {
+
+    font-size:
+      23vw;
+
+  }
+
+
+  .hint {
+
+    right:
+      20px;
+
+    bottom:
+      185px;
+
+    max-width:
+      120px;
+
+    text-align:
+      right;
+
+  }
+
+}
+
+
+/* ==================================================
+   SMALL HEIGHT
+================================================== */
+
+@media (
+  max-height: 650px
+) {
+
+  .info {
+
+    bottom:
+      90px;
+
+  }
+
+  .hint {
+
+    bottom:
+      90px;
+
+  }
+
+}
+
+
+/* ==================================================
+   REDUCED MOTION
+================================================== */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+
+  *,
+  *::before,
+  *::after {
+
+    animation-duration:
+      .01ms !important;
+
+    transition-duration:
+      .01ms !important;
+
+  }
+
+}
